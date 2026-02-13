@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #121418;
+      --card-glass: rgba(44, 47, 56, 0.5);
+      --border-light: rgba(255, 255, 255, 0.08);
+      --text-main: #fff;
+      --text-gray: #8b8e99;
+      --blue: #3d7bf8;
+      --orange: #f57c51;
+      --cyan: #3dd8c9;
+      --radius: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #1a1d24;
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 95vw;
+      height: 95vh;
+      display: grid;
+      grid-template-columns: 260px 1fr 300px;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .group-item {
+      padding: 20px;
+      border-radius: var(--radius);
+      background: var(--card-glass);
+      cursor: pointer;
+      border-left: 4px solid transparent;
+      transition: 0.3s;
+    }
+
+    .group-item.active {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .group-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .group-item.blue {
+      border-color: var(--blue);
+    }
+
+    .group-item.orange {
+      border-color: var(--orange);
+    }
+
+    .group-item.cyan {
+      border-color: var(--cyan);
+    }
+
+    .btn-add {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .chart-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background: var(--card-glass);
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .check-circle {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--blue);
+      border-radius: 50%;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+
+    .task.done .check-circle {
+      background: var(--blue);
+    }
+
+    .task.done span {
+      text-decoration: line-through;
+      color: var(--text-gray);
+    }
+
+    .input-box {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border-light);
+      padding: 15px;
+      width: 100%;
+      color: white;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .calendar-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .day {
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .day.active {
+      background: var(--blue);
+    }
+
+    .timeline {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .event {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 10px;
+      border-left: 3px solid var(--orange);
+      margin-left: 40px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+        height: auto;
+        display: block;
+        padding: 20px;
+      }
+
+      body {
+        height: auto;
+        display: block;
+        overflow-y: scroll;
+      }
+
+      .sidebar,
+      .main-content,
+      .right-panel {
+        margin-bottom: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="sidebar">
+      <div class="group-item blue active">
+        <h3>General</h3>
+        <small style="color: grey">12 tasks</small>
+      </div>
+      <div class="group-item orange">
+        <h3>Meetings</h3>
+        <small style="color: grey">5 tasks</small>
+      </div>
+      <div class="group-item cyan">
+        <h3>Trip</h3>
+        <small style="color: grey">2 tasks</small>
+      </div>
+
+      <button class="btn-add">
+        <ion-icon name="add-circle"></ion-icon> Create New Group
+      </button>
+    </div>
+
+    <div class="main-content">
+
+      <div class="stats-row">
+        <div class="card">
+          <ion-icon name="pie-chart" style="color: var(--orange); font-size: 1.5rem"></ion-icon>
+          <h4>Next Meeting</h4>
+          <p>Product Review</p>
+        </div>
+        <div class="card">
+          <ion-icon name="airplane" style="color: var(--cyan); font-size: 1.5rem"></ion-icon>
+          <h4>Trip</h4>
+          <p>Oslo, Norway</p>
+        </div>
+      </div>
+
+      <div class="card chart-box">
+        <div style="position: relative; width: 120px; height: 120px;">
+          <svg width="120" height="120" style="transform: rotate(-90deg);">
+            <circle cx="60" cy="60" r="50" fill="none" stroke="#333" stroke-width="8" />
+            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--blue)" stroke-width="8" stroke-dasharray="314"
+              stroke-dashoffset="100" stroke-linecap="round" />
+          </svg>
+          <div style="position: absolute; top: 40%; left: 35%; font-weight: bold;">70%</div>
+        </div>
+        <div>
+          <p><span style="color: var(--blue)">●</span> All Tasks</p>
+          <p><span style="color: var(--orange)">●</span> General</p>
+        </div>
+      </div>
+
+      <div class="task-list" id="myTaskList">
+        <div class="task">
+          <div class="check-circle" onclick="this.parentElement.classList.toggle('done')"></div>
+          <span>Review project proposal</span>
+        </div>
+      </div>
+
+      <input type="text" id="taskInput" class="input-box" placeholder="+ Add a new task (Press Enter)">
+    </div>
+
+    <div class="right-panel card">
+      <div class="calendar-row">
+        <div class="day"><b>8</b><br>Mon</div>
+        <div class="day active"><b>9</b><br>Tue</div>
+        <div class="day"><b>10</b><br>Wed</div>
+        <div class="day"><b>11</b><br>Thu</div>
+      </div>
+
+      <div class="timeline">
+        <div style="font-size: 0.8rem; color: grey;">10 am</div>
+        <div class="event">Team Standup</div>
+
+        <div style="font-size: 0.8rem; color: grey;">12 pm</div>
+        <div class="event" style="border-color: var(--blue)">Lunch Break</div>
+
+        <div style="font-size: 0.8rem; color: grey;">2 pm</div>
+      </div>
+
+      <div
+        style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; display: flex; gap: 10px; align-items: center;">
+        <ion-icon name="notifications" style="color: var(--cyan)"></ion-icon>
+        <div>
+          <b>Reminder</b><br><small style="color: grey">Call Mom at 6pm</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const input = document.getElementById('taskInput');
+    const list = document.getElementById('myTaskList');
+
+    input.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter' && this.value.trim() !== '') {
+
+        const div = document.createElement('div');
+        div.className = 'task';
+        div.innerHTML = `
+                    <div class="check-circle" onclick="this.parentElement.classList.toggle('done')"></div>
+                    <span>${this.value}</span>
+                `;
+
+        list.appendChild(div);
+
+        this.value = '';
+      }
+    });
+  </script>
+</body>
+
+</html>
